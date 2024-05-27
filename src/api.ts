@@ -82,13 +82,13 @@ async function getStandardSet(standardsetId: string): Promise<StandardSet> {
   return await getData(URLS.standardSet + standardsetId)
 }
 
-async function getAllStandardSets(): Promise<StandardSet[]> {
+async function getAllStandardSets(): Promise<StandardSetListing[]> {
   const jurisdictions = await getAllJurisdictions();
-  const standardSetIDs = await Promise.all(jurisdictions.map(async (jur) => {
-    const jurisdiction =  await getJurisdiction(jur.id)
-    return jurisdiction.standardSets.map(s => s.id).flat()
-  }).flat())
-  return await Promise.all(standardSetIDs.flat().map(async (set) => await getStandardSet(set)))
+  const standards = Promise.all(jurisdictions.map(async (jur) => {
+    const standards = await getJurisdiction(jur.id).then((j) => j.standardSets);
+    return standards;
+  })).then(r => r.flat());
+  return standards
 }
 
 
