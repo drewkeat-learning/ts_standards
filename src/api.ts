@@ -38,6 +38,7 @@ async function getJurisdiction(jurisdictionId: string): Promise<Jurisdiction> {
 }
 
 export type StandardSetListing = {
+  done: boolean;
   id: string;
   title: string;
   subject: string;
