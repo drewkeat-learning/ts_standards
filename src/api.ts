@@ -17,6 +17,7 @@ async function getData(url: string, opts?: object) {
 }
 
 export type JurisdictionListing = {
+  cached: boolean;
   id: string;
   title: string;
   type: ["school", "organization", "state", "country", "corporation", "nation"];
@@ -27,6 +28,7 @@ async function getAllJurisdictions(): Promise<JurisdictionListing[]> {
 }
 
 export type Jurisdiction = {
+  cached: boolean;
   id: string;
   title: string;
   type: string;
