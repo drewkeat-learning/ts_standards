@@ -18,7 +18,7 @@ generator client {
 
 model JurisdictionListing {
   id        String   @unique
-  title     String  @unique
+  title     String
   type JurisdictionType
   createdAt DateTime @default(now())
   updatedAt  DateTime   @updatedAt
