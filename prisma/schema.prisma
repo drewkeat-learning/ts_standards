@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs https//pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate https//pris.ly/cli/accelerate-init
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+//Models
+
+model JurisdictionListing {
+  id        String   @unique
+  title     String
+  type JurisdictionType
+  createdAt DateTime @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+enum JurisdictionType {
+  school
+  organization
+  state
+  country
+  corporation
+  nation
+}
+
+// model Jurisdiction {
+//   id           String
+//   title        String
+//   type         String
+//   standardSets StandardSetListing[]
+// }
+
+// model StandardSetListing {
+//   done            boolean
+//   id              String
+//   title           String
+//   subject         String
+//   educationLevels String[]
+//   document { [index string] any }
+// }
+
+// model StandardSet {
+//   id              string
+//   title           string
+//   subject         string
+//   educationLevels string[]
+//   cspStatus {}
+//   license {
+//   title           string
+//   URL             string
+//   rightsHolder    string
+// }
+
+// document {
+// title string
+// }
+// jurisdiction {
+// id string
+// title string
+// }
+// standards {[index string] Standard}
+// }
+// model Standard {
+//   id                string
+//   asnIdentifier     null
+//   position          number
+//   depth             number
+//   listId            string
+//   statementNotation string
+//   statementLabel    string
+//   description       string
+//   ancestorIds       string[]
+// }
