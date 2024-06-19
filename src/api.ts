@@ -1,3 +1,5 @@
+import { JurisdictionListing } from "@prisma/client";
+
 const URLS = {
   jurisdiction: "http://commonstandardsproject.com/api/v1/jurisdictions/",
   standardSet: "http://commonstandardsproject.com/api/v1/standard_sets/",
@@ -16,12 +18,12 @@ async function getData(url: string, opts?: object) {
     .then((d) => d.data);
 }
 
-export type JurisdictionListing = {
-  cached: boolean;
-  id: string;
-  title: string;
-  type: ["school", "organization", "state", "country", "corporation", "nation"];
-};
+// export type JurisdictionListing = {
+//   cached: boolean;
+//   id: string;
+//   title: string;
+//   type: ["school", "organization", "state", "country", "corporation", "nation"];
+// };
 
 async function getAllJurisdictions(): Promise<JurisdictionListing[]> {
   return await getData(URLS.jurisdiction);
