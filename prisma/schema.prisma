@@ -17,11 +17,11 @@ generator client {
 //Models
 
 model JurisdictionListing {
-  id        String   @unique
+  id        String           @unique
   title     String
-  type JurisdictionType
-  createdAt DateTime @default(now())
-  updatedAt  DateTime   @updatedAt
+  type      JurisdictionType
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 }
 
 enum JurisdictionType {
@@ -33,51 +33,48 @@ enum JurisdictionType {
   nation
 }
 
-// model Jurisdiction {
-//   id           String
-//   title        String
-//   type         String
-//   standardSets StandardSetListing[]
-// }
+model Jurisdiction {
+  id           String               @unique
+  title        String
+  type         JurisdictionType
+  standardSets StandardSet[]
+}
 
 // model StandardSetListing {
-//   done            boolean
-//   id              String
+//   done            Boolean
+//   id              String        @unique
 //   title           String
 //   subject         String
 //   educationLevels String[]
-//   document { [index string] any }
+//   document        Json
+//   Jurisdiction    Jurisdiction? @relation(fields: [jurisdictionId], references: [id])
+//   jurisdictionId  String
 // }
 
-// model StandardSet {
-//   id              string
-//   title           string
-//   subject         string
-//   educationLevels string[]
-//   cspStatus {}
-//   license {
-//   title           string
-//   URL             string
-//   rightsHolder    string
-// }
-
-// document {
-// title string
-// }
-// jurisdiction {
-// id string
-// title string
-// }
-// standards {[index string] Standard}
-// }
-// model Standard {
-//   id                string
-//   asnIdentifier     null
-//   position          number
-//   depth             number
-//   listId            string
-//   statementNotation string
-//   statementLabel    string
-//   description       string
-//   ancestorIds       string[]
-// }
+model StandardSet {
+  id              String @unique
+  title           String
+  subject         String
+  educationLevels String[]
+  cspStatus Json
+  license Json
+  document Json
+  jurisdiction Jurisdiction @relation(fields: [jurisdictionId], references: [id])
+  jurisdictionId  String
+  standards Standard[]
+}
+model Standard {
+  id                String  @unique
+  asnIdentifier     String
+  position          Int
+  depth             Int
+  listId            String
+  statementNotation String
+  altStatementNotation String
+  statementLabel String
+  description       String
+  comments  String[]
+  ancestorIds       String[]
+  standardSet StandardSet @relation(fields: [standardSetId], references: [id])
+  standardSetId String
+}
