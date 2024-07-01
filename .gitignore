@@ -11,3 +11,7 @@ dist
 
 # IDE
 .vscode/
+
+# Logs
+/logs
+logs/*

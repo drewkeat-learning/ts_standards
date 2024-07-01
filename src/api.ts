@@ -1,11 +1,11 @@
-import { JurisdictionListing } from "@prisma/client";
+import { JurisdictionListing, Jurisdiction, StandardSet, Standard, Prisma } from "@prisma/client";
 
 const URLS = {
   jurisdiction: "http://commonstandardsproject.com/api/v1/jurisdictions/",
   standardSet: "http://commonstandardsproject.com/api/v1/standard_sets/",
 };
 /* returns data value from fetch request */
-async function getData(url: string, opts?: object) {
+async function fetchData(url: string, opts?: object) {
   const options = {
     method: "GET",
     headers: {
@@ -25,20 +25,31 @@ async function getData(url: string, opts?: object) {
 //   type: ["school", "organization", "state", "country", "corporation", "nation"];
 // };
 
-async function getAllJurisdictions(): Promise<JurisdictionListing[]> {
-  return await getData(URLS.jurisdiction);
+async function fetchAllJurisdictions(): Promise<JurisdictionListing[]> {
+  return await fetchData(URLS.jurisdiction);
 }
 
-export type Jurisdiction = {
-  cached: boolean;
-  id: string;
-  title: string;
-  type: string;
-  standardSets: StandardSetListing[];
-};
+// export type Jurisdiction = {
+//   cached: boolean;
+//   id: string;
+//   title: string;
+//   type: string;
+//   standardSets: StandardSetListing[];
+// };
 
-async function getJurisdiction(jurisdictionId: string): Promise<Jurisdiction> {
-  return await getData(URLS.jurisdiction + jurisdictionId);
+interface JurisdictionWithStandardSets extends Jurisdiction {
+  standardSets: {
+    id: string;
+    title: string;
+    subject: string;
+    educationLevels: string[];
+    document: { [index: string]: string };
+  }[]
+}
+async function fetchJurisdiction(
+  jurisdictionId: string
+): Promise<JurisdictionWithStandardSets> {
+  return await fetchData(URLS.jurisdiction + jurisdictionId);
 }
 
 export type StandardSetListing = {
@@ -50,51 +61,61 @@ export type StandardSetListing = {
   document: { [index: string]: any };
 };
 
-export type StandardSet = {
+// export type StandardSet = {
+//   id: string;
+//   title: string;
+//   subject: string;
+//   educationLevels: string[];
+//   cspStatus: {};
+//   license: {
+//     title: string;
+//     URL: string;
+//     rightsHolder: string;
+//   };
+//   document: {
+//     title: string;
+//   };
+//   jurisdiction: {
+//     id: string;
+//     title: string;
+//   };
+//   standards: {[index: string]: Standard}
+// };
+
+// export type Standard = {
+//   id: string;
+//   asnIdentifier: null;
+//   position: number;
+//   depth: number;
+//   listId: string;
+//   statementNotation: string;
+//   statementLabel: string;
+//   description: string;
+//   ancestorIds: string[];
+// };
+
+
+type StandardSetImport = {
   id: string;
   title: string;
   subject: string;
   educationLevels: string[];
-  cspStatus: {};
-  license: {
-    title: string;
-    URL: string;
-    rightsHolder: string;
-  };
-  document: {
-    title: string;
-  };
-  jurisdiction: {
-    id: string;
-    title: string;
-  };
-  standards: {[index: string]: Standard}
-};
-
-export type Standard = {
-  id: string;
-  asnIdentifier: null;
-  position: number;
-  depth: number;
-  listId: string;
-  statementNotation: string;
-  statementLabel: string;
-  description: string;
-  ancestorIds: string[];
-};
-
-async function getStandardSet(standardsetId: string): Promise<StandardSet> {
-  return await getData(URLS.standardSet + standardsetId)
+  cspStatus: Prisma.JsonObject;
+  license: Prisma.JsonObject;
+  document: Prisma.JsonObject;
+  jurisdictionId: string;
+  standards: Standard[]
 }
 
-async function getAllStandardSets(): Promise<StandardSetListing[]> {
-  const jurisdictions = await getAllJurisdictions();
-  const standards = Promise.all(jurisdictions.map(async (jur) => {
-    const standards = await getJurisdiction(jur.id).then((j) => j.standardSets);
-    return standards;
-  })).then(r => r.flat());
-  return standards
+async function fetchStandardSet(standardsetId: string): Promise<StandardSetImport> {
+  let init = await fetchData(URLS.standardSet + standardsetId);
+  const {jurisdiction, standards, ...set} = init
+  return {...set, standards: Object.values(standards), jurisdictionId: jurisdiction.id}
 }
 
-
-export default {getData, getAllJurisdictions, getJurisdiction, getStandardSet, getAllStandardSets}
+export default {
+  fetchData,
+  fetchAllJurisdictions,
+  fetchJurisdiction,
+  fetchStandardSet,
+};

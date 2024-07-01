@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Standard" ALTER COLUMN "position" DROP NOT NULL,
+ALTER COLUMN "depth" DROP NOT NULL,
+ALTER COLUMN "statementNotation" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL;

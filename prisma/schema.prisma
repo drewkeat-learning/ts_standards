@@ -3,7 +3,6 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate https//pris.ly/cli/accelerate-init
-
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
@@ -16,14 +15,6 @@ generator client {
 
 //Models
 
-model JurisdictionListing {
-  id        String           @unique
-  title     String
-  type      JurisdictionType
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-}
-
 enum JurisdictionType {
   school
   organization
@@ -34,10 +25,13 @@ enum JurisdictionType {
 }
 
 model Jurisdiction {
-  id           String               @unique
-  title        String
-  type         JurisdictionType
-  standardSets StandardSet[]
+  id             String           @id @unique
+  title          String
+  type           JurisdictionType
+  standardSets   StandardSet[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  standardSetIds String[]
 }
 
 // model StandardSetListing {
@@ -52,29 +46,31 @@ model Jurisdiction {
 // }
 
 model StandardSet {
-  id              String @unique
+  id              String       @unique
   title           String
   subject         String
   educationLevels String[]
-  cspStatus Json
-  license Json
-  document Json
-  jurisdiction Jurisdiction @relation(fields: [jurisdictionId], references: [id])
+  cspStatus       Json
+  license         Json
+  document        Json
+  jurisdiction    Jurisdiction @relation(fields: [jurisdictionId], references: [id])
   jurisdictionId  String
-  standards Standard[]
+  standards       Standard[]
 }
+
 model Standard {
-  id                String  @unique
-  asnIdentifier     String
-  position          Int
-  depth             Int
-  listId            String
-  statementNotation String
-  altStatementNotation String
-  statementLabel String
-  description       String
-  comments  String[]
-  ancestorIds       String[]
-  standardSet StandardSet @relation(fields: [standardSetId], references: [id])
-  standardSetId String
+  id                   String      @unique
+  asnIdentifier        String?
+  position             Int?
+  depth                Int?
+  listId               String?
+  statementNotation    String?
+  altStatementNotation String?
+  statementLabel       String?
+  description          String?
+  exactMatch           String[]
+  comments             String[]
+  ancestorIds          String[]
+  standardSet          StandardSet @relation(fields: [standardSetId], references: [id])
+  standardSetId        String
 }

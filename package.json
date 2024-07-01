@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.16.1",
     "@supabase/supabase-js": "^2.43.5",
     "dotenv": "^16.4.5",
     "postgres": "^3.4.4",
